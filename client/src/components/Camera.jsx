@@ -1,4 +1,5 @@
 import React, { useState, useEffect }  from 'react';
+import './lists.scss';
 import axios from 'axios';
 
 
@@ -10,7 +11,6 @@ const Cameras = () => {
         axios.get(`http://localhost:5000/api/products/camera`)
           .then(res => {
             setArr(res.data.results);
-            console.log(res.data.results)
           })
       }
 
@@ -24,11 +24,11 @@ const Cameras = () => {
 
     return(
         <>
-        {arr.map(item => (
-            <ul>
-                <li key={item.id}>{item.name}</li>
+            <ul className='list'>
+                {arr.map(item => (
+                    <li className='list__item' key={item.id}>{item.name}</li>
+                ))}
             </ul>
-        ))}
         </>
     )
 }

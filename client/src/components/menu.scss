@@ -1,0 +1,8 @@
+.menu{
+    display: flex;
+    &__item{
+        height: 5vh;
+        width: 20vw;
+        font-weight: bold;
+    }
+}

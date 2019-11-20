@@ -1,4 +1,5 @@
 import React, { useState, useEffect }  from 'react';
+import './lists.scss';
 import axios from 'axios';
 
 
@@ -21,11 +22,11 @@ const Accessories = () => {
  
     return(
         <>
-        {arr.map(item => (
-            <ul>
-                <li key={item.id}>{item.name}</li>
+            <ul className='list'>
+                {arr.map(item => (
+                    <li className='list__item' key={item.id}>{item.name}</li>
+                ))}
             </ul>
-        ))}
         </>
     )
 }

@@ -1,9 +1,10 @@
 import React from 'react';
+import './searchBar.scss';
 
 const SearchBar = props => {
     return (
         <>
-            <input type="text" placeholder="szukaj" onChange={props.onChange('value')} />
+            <input className="searchBar" type="text" placeholder="szukaj" onChange={props.onChange('value')} />
         </>
     )
 }

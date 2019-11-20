@@ -16,21 +16,17 @@ router.get('/:category', paginatedResults(Products), (req, res) => {
 
 function paginatedResults(model) {
     return async (req, res, next) => {
-        const page = parseInt(req.query.page)
-        const limit = parseInt(req.query.limit)
-        const q = req.query.name
-        // const sort = {}
-        const modelItems = model.schema.paths 
-        const modelType = modelItems.type.path
-        // if ("type" in modelItems) {
-        //     sort[req.query.sortBy]   = req.query.OrderBy === 'desc' ? 1 : -1
-        // }
-        console.log(modelType)
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const query = req.query.name;
+        let sort = {};
+        const findOptions = {};
         const currentCategory = req.params.category;
-        const startIndex = ( page - 1 ) * limit
-        const endIndex = page * limit
+        const startIndex = ( page - 1 ) * limit;
+        const endIndex = page * limit;
+        // console.log(res)
 
-        const results = {}
+        const results = {};
 
         if (endIndex < await model.countDocuments().exec()) {
             results.next = {
@@ -45,35 +41,22 @@ function paginatedResults(model) {
                 limit: limit
             }
         }
-        try {
-            if(q === undefined) {
-              if(currentCategory === "category") {
-                results.results = await model.find().limit(limit).skip(startIndex).exec()
-                res.paginatedResults = results
-                next()
+
+        if(query) {
+            findOptions.name = query;
+        } else {
+            if(currentCategory !== 'category') {
+                findOptions.type = currentCategory;
             } else {
-                results.results = await model.find({
-                    type: currentCategory,
-                })
-                .limit(limit)
-                .skip(startIndex)
-                .sort({'type': -1})
-                .exec();
-                res.paginatedResults = results
-                res.json(res.paginatedResults)
+                sort = {'name': 1}
             }
-            } else{
-                results.results = await model.find({
-                    name: q,
-                })
-                .limit(limit)
-                .skip(startIndex)
-                .exec();
-                res.paginatedResults = results
-                res.json(res.paginatedResults)
-            }  
         }
-        
+        try {
+
+            results.results = await model.find(findOptions).sort(sort).limit(limit).skip(startIndex).exec();
+            res.paginatedResults = results;
+            res.json(res.paginatedResults);
+        }
             catch (e) {
             res.status(404).json({ message: e.message })
         }
